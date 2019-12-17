@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
         throw;
     }
     
-    print_lexeme_list(token_list, src_chars);
+    //print_lexeme_list(token_list, src_chars);
 
     try {
         evaluate(token_list, src_chars);

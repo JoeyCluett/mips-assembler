@@ -1,0 +1,25 @@
+
+# mips assembly routine to copy words from one address range to another
+# $a0 : src address
+# $a1 : number of words
+# $a2 : dest address
+.data
+    # dont actually have any data to save
+
+.text
+mips_memcopy:
+
+  memcpy_loop:
+    lw $t0, 0($a0)
+    sw $t0, 0($a2)
+    
+    # advance the memory pointers
+    addi $a0, $a0, 4
+    addi $a2, $a2, 4
+
+    # decrement the count
+    addi $a1, $a1, -1
+    bgtz $a1, memcpy_loop # loop until done
+
+    jr $ra # return to calling routine
+    

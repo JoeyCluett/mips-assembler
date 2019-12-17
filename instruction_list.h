@@ -63,5 +63,6 @@ const std::unordered_set<std::string> instruction_list = {
     "move",    // move register to register
     "sge",     // set on greater than or equal to
     "sgt",     // set on greater than
+    "b",       // branch unconditionally
 
 };

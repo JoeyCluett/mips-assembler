@@ -6,7 +6,7 @@
 #include "lex-data.h"
 #include "lex-exception.h"
 
-#define LEX_DEBUG 1
+#define LEX_DEBUG 0
 
 c_iter lex_comment(c_iter cur, std::vector<char>& src, std::vector<lexeme>& tokens) {
     // comments dont get a lexeme entry

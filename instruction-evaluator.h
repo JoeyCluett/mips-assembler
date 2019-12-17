@@ -218,14 +218,6 @@ token_iter evaluate_instruction(
                 instruction.des.i32  = get_register_index((iter+1)->to_string(src));
                 instruction.src1.i32 = get_register_index((iter+3)->to_string(src));
 
-                // branch target must be a symbolic reference
-                //auto val = (iter+5)->to_string(src);
-                //assert(ad->constant_lookup.find(val) != ad->constant_lookup.end());
-                //auto immval = ad->constant_lookup.at(val).to_string(src);
-                //auto en = evaluate_number(immval);
-                //assert(en.type == NC_int);
-                //instruction.imm.i32 = en.i32;
-
                 // store the index of the label. later these will all be checked
                 instruction.imm.u32 = (iter+5) - tokens.begin();
 
@@ -790,13 +782,219 @@ token_iter evaluate_instruction(
         {
             "sra",
             [&]() {
-                
+                assert((iter+1)->type == register_reference);
+                assert((iter+2)->type == comma);
+                assert((iter+3)->type == register_reference);
+                assert((iter+4)->type == comma);
+                assert((iter+5)->type == number_literal || (iter+5)->type == symbolic_constant);
+
+                instruction.opcode = inst_sra;
+                instruction.des.i32 = get_register_index((iter+1)->to_string(src));
+                instruction.src1.i32 = get_register_index((iter+3)->to_string(src));
+
+                if((iter+5)->type == number_literal) {
+                    auto en = evaluate_number((iter+5)->to_string(src));
+                    assert(en.type == NC_int);
+                    instruction.imm.i32 = en.i32;
+                }
+                else {
+                    auto it = ad->constant_lookup.find((iter+5)->to_string(src));
+                    assert(it != ad->constant_lookup.end());
+                    auto en = evaluate_number(it->second.to_string(src));
+                    assert(en.type == NC_int);
+                    instruction.imm.i32 = en.i32;
+                }
+
+                ad->instruction_list.push_back(instruction);
+                iter += 6;
+
             }
+        },
+        {
+            "srl",
+            [&]() {
+                assert((iter+1)->type == register_reference);
+                assert((iter+2)->type == comma);
+                assert((iter+3)->type == register_reference);
+                assert((iter+4)->type == comma);
+                assert((iter+5)->type == number_literal || (iter+5)->type == symbolic_constant);
+
+                instruction.opcode = inst_srl;
+                instruction.des.i32 = get_register_index((iter+1)->to_string(src));
+                instruction.src1.i32 = get_register_index((iter+3)->to_string(src));
+
+                if((iter+5)->type == number_literal) {
+                    auto en = evaluate_number((iter+5)->to_string(src));
+                    assert(en.type == NC_int);
+                    instruction.imm.i32 = en.i32;
+                }
+                else {
+                    auto it = ad->constant_lookup.find((iter+5)->to_string(src));
+                    assert(it != ad->constant_lookup.end());
+                    auto en = evaluate_number(it->second.to_string(src));
+                    assert(en.type == NC_int);
+                    instruction.imm.i32 = en.i32;
+                }
+
+                ad->instruction_list.push_back(instruction);
+                iter += 6;
+            }
+        },
+        {
+            "srlv",
+            [&]() {
+                assert((iter+1)->type == register_reference);
+                assert((iter+2)->type == comma);
+                assert((iter+3)->type == register_reference);
+                assert((iter+4)->type == comma);
+                assert((iter+5)->type == register_reference);
+
+                instruction.opcode = inst_srlv;
+                instruction.des.i32  = get_register_index((iter+1)->to_string(src));
+                instruction.src1.i32 = get_register_index((iter+3)->to_string(src));
+                instruction.src2.i32 = get_register_index((iter+5)->to_string(src));
+
+                ad->instruction_list.push_back(instruction);
+                iter += 6;
+            }
+        },
+        {
+            "sub",
+            [&]() {
+                assert((iter+1)->type == register_reference);
+                assert((iter+2)->type == comma);
+                assert((iter+3)->type == register_reference);
+                assert((iter+4)->type == comma);
+                assert((iter+5)->type == register_reference);
+
+                instruction.opcode = inst_sub;
+                instruction.des.i32  = get_register_index((iter+1)->to_string(src));
+                instruction.src1.i32 = get_register_index((iter+3)->to_string(src));
+                instruction.src2.i32 = get_register_index((iter+5)->to_string(src));
+
+                ad->instruction_list.push_back(instruction);
+                iter += 6;
+            }
+        },
+        {
+            "subu",
+            [&]() {
+                assert((iter+1)->type == register_reference);
+                assert((iter+2)->type == comma);
+                assert((iter+3)->type == register_reference);
+                assert((iter+4)->type == comma);
+                assert((iter+5)->type == register_reference);
+
+                instruction.opcode = inst_subu;
+                instruction.des.i32  = get_register_index((iter+1)->to_string(src));
+                instruction.src1.i32 = get_register_index((iter+3)->to_string(src));
+                instruction.src2.i32 = get_register_index((iter+5)->to_string(src));
+
+                ad->instruction_list.push_back(instruction);
+                iter += 6;
+            }
+        },
+        {
+            "sw",
+            [&]() {
+                assert((iter+1)->type == register_reference);
+                assert((iter+2)->type == comma);
+                assert((iter+3)->type == number_literal || (iter+3)->type == symbolic_constant);
+                assert((iter+4)->type == open_paren);
+                assert((iter+5)->type == register_reference);
+                assert((iter+6)->type == close_paren);
+
+                instruction.opcode = inst_sw;
+                instruction.des.i32 = get_register_index((iter+1)->to_string(src));
+                instruction.src1.i32 = get_register_index((iter+5)->to_string(src));
+
+                if((iter+3)->type == number_literal) {
+                    auto en = evaluate_number((iter+3)->to_string(src));
+                    assert(en.type == NC_int);
+                    instruction.imm.i32 = en.i32;
+                }
+                else {
+                    auto it = ad->constant_lookup.find((iter+3)->to_string(src));
+                    assert(it != ad->constant_lookup.end());
+                    auto en = evaluate_number(it->second.to_string(src));
+                    assert(en.type == NC_int);
+                    instruction.imm.i32 = en.i32;
+                }
+
+
+                ad->instruction_list.push_back(instruction);
+                iter += 7;
+            }
+        },
+        {
+            "syscall",
+            [&]() {
+                instruction.opcode = inst_syscall;
+                
+                ad->instruction_list.push_back(instruction);
+                iter += 1;
+            }
+        },
+        {
+            "xor",
+            [&]() {
+                assert((iter+1)->type == register_reference);
+                assert((iter+2)->type == comma);
+                assert((iter+3)->type == register_reference);
+                assert((iter+4)->type == comma);
+                assert((iter+5)->type == register_reference);
+
+                instruction.opcode = inst_xor;
+                instruction.des.i32  = get_register_index((iter+1)->to_string(src));
+                instruction.src1.i32 = get_register_index((iter+3)->to_string(src));
+                instruction.src2.i32 = get_register_index((iter+5)->to_string(src));
+
+                ad->instruction_list.push_back(instruction);
+                iter += 6;
+            }
+        },
+        {
+            "xori",
+            [&]() {
+                assert((iter+1)->type == register_reference);
+                assert((iter+2)->type == comma);
+                assert((iter+3)->type == register_reference);
+                assert((iter+4)->type == comma);
+                assert((iter+5)->type == number_literal || (iter+5)->type == symbolic_constant);
+
+                instruction.opcode = inst_slti;
+                instruction.des.i32 = get_register_index((iter+1)->to_string(src));
+                instruction.src1.i32 = get_register_index((iter+3)->to_string(src));
+
+                if((iter+5)->type == number_literal) {
+                    auto en = evaluate_number((iter+5)->to_string(src));
+                    assert(en.type == NC_int);
+                    instruction.imm.i32 = en.i32;
+                }
+                else {
+                    auto it = ad->constant_lookup.find((iter+5)->to_string(src));
+                    assert(it != ad->constant_lookup.end());
+                    auto en = evaluate_number(it->second.to_string(src));
+                    assert(en.type == NC_int);
+                    instruction.imm.i32 = en.i32;
+                }
+
+                ad->instruction_list.push_back(instruction);
+                iter += 6;
+            }
+        },
+        {
+            
         }
     };
 
     auto institer = opcodemap.find(opcode);
-    assert(institer != opcodemap.end()); // does no good if instruction is not implemented
+    //assert(institer != opcodemap.end()); // does no good if instruction is not implemented
+    
+    if(institer == opcodemap.end()) {
+        throw std::runtime_error("instruction (" + opcode + " ) is not implemented");
+    }
+    
     institer->second(); // call the instruction assembler callback for this opcode
     return iter;
 }
