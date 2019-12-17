@@ -16,3 +16,7 @@ struct AssemblerData {
     std::vector<Instruction> instruction_list;
 
 };
+
+struct GeneratedCode {
+    
+};

@@ -208,7 +208,7 @@ auto eval_data_directive(
 
 }
 
-void evaluate(std::vector<lexeme>& tokens, std::vector<char>& src) {
+auto evaluate(std::vector<lexeme>& tokens, std::vector<char>& src) -> AssemblerData* {
 
     const int state_default = 0;
     const int state_data    = 1;
@@ -351,4 +351,7 @@ void evaluate(std::vector<lexeme>& tokens, std::vector<char>& src) {
                 throw std::runtime_error("evaluate : invalid internal state. current token: '" + cur->to_string(src) + "'");
         }
     }
+
+    return ad_ptr;
+
 }

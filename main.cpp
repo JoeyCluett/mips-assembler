@@ -1,8 +1,11 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <algorithm>
 #include "lexer.h"
 #include "evaluator.h"
+//#include "code-generation.h"
+#include "ir-generator.h"
 #include "main.h"
 
 using namespace std;
@@ -12,7 +15,7 @@ int main(int argc, char* argv[]) {
     //std::__cxx11::basic_string<char> mystring;
 
     if(argc != 2) {
-        cout << "Usage: \n" << argv[1] << " <input file>\n";
+        cout << "Usage: \n" << argv[0] << " <input file>\n";
     }
 
     ifstream is(argv[1]);
@@ -28,9 +31,10 @@ int main(int argc, char* argv[]) {
     }
     
     //print_lexeme_list(token_list, src_chars);
+    AssemblerData* ad_ptr;
 
     try {
-        evaluate(token_list, src_chars);
+        ad_ptr = evaluate(token_list, src_chars);
     }
     catch(EvalException& exc) {
         // print all relevant information
@@ -51,6 +55,8 @@ int main(int argc, char* argv[]) {
         throw std::runtime_error("exception caught in main");
 
     }
+
+    ir_generator(ad_ptr, string(argv[1]) + ".ir", 0, 2*1024*1024);
 
     return 0;
 }
