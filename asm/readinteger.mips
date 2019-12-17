@@ -1,0 +1,9 @@
+# syscall number subject to change
+SYSCALL_READ_INT = 3
+
+.globl read_integer
+read_integer:
+    li $v0, SYSCALL_READ_INT
+    syscall
+    move $t0, $v0
+    ret

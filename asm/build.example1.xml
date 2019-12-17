@@ -1,0 +1,20 @@
+<root>
+    <source filename="example1.mips"/>
+
+    <text>
+        <start_address start="0x00000000"/>
+        <start_subroutine name="main"/>
+
+        <imports filename="readinteger.mips"/>
+    </text>
+
+    <data>
+        <start_address start="0x10000000"/>
+    </data>
+
+    <registers default="0">
+        <r0 value="-1"/> <!-- shouldnt have any effect as $zero is always... well... zero -->
+        <r1 value="0x10000000"/>
+    </registers>
+
+</root>

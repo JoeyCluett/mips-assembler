@@ -1,0 +1,51 @@
+VALUE0   = 2
+OFFSET20 = 4
+IMM      = 12000
+
+.data # data section
+    value: .word 10, 20, 0 # load data integers
+
+.text # text section
+main:
+    #add  $a0, $a1, $t3
+    #addi $t0, $t0, VALUE0
+    #addi $t0, $t0, 123
+    #lw   $t0, OFFSET20($t1)
+    #beq $t0, $a0, main
+
+    add     $t0, $a0, $t0
+    addi    $t1, $a1, IMM
+    addi    $t2, $a2, 321
+    addiu   $t2, $a2, VALUE0
+    addu    $a3, $s0, $s1
+other:
+    and     $s2, $s3, $s4
+    andi    $s3, $s4, -321
+    beq     $at, $zero, other
+    bgez    $s4, other
+    bgezal  $t0, forwardlabel
+    bgtz    $t1, forwardlabel
+    blez    $t2, forwardlabel
+    bltz    $t3, main
+    bltzal  $t4, other
+    bne     $a0, $a1, endlabel
+    div     $v0, $v1
+forwardlabel:
+    divu    $t8, $t9
+    j       endlabel
+#    jal
+#    jr
+#    lb
+#    lui
+#    lw
+#    mfhi
+#    mflo
+#    mult
+#    multu
+#    noop
+#    or
+#    ori
+#    sb
+#
+#
+endlabel:
