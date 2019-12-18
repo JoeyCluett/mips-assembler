@@ -1,8 +1,26 @@
 <root>
+
+    <!--
+        text : 
+            actual code (instruction) section. requires a starting 
+            address. notice that text and data sections can be in 
+            completely different areas of memory
+    
+        data : 
+            data used by the program. there are no access rules 
+            regarding this memory. the program is free to modify 
+            this memory. if you absolutely need constants, use 
+            instructions that can directly encode them
+    
+        registers : 
+            
+
+    -->
+
     <source filename="example1.mips"/>
 
     <text>
-        <start_address start="0x00000000"/>
+        <start_address    start="0x00000000"/>
         <start_subroutine name="main"/>
 
         <imports filename="readinteger.mips"/>
@@ -15,6 +33,8 @@
     <registers default="0">
         <r0 value="-1"/> <!-- shouldnt have any effect as $zero is always... well... zero -->
         <r1 value="0x10000000"/>
+
+        <stack_pointer value="0x20000000"/> <!-- stack pointer needs to start somewhere -->
     </registers>
 
 </root>

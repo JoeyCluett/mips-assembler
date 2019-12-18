@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <fstream>
 #include <iostream>
 #include "assembler-data-tables.h"
@@ -9,13 +8,15 @@ void ir_generator(AssemblerData* ad, std::string filename, size_t text_start_add
 
     std::ofstream of(filename);
 
+    of << "TEXT " << ad->instruction_list.size() << '\n';
+
     for(auto& p : ad->instruction_list) {
         switch(p.opcode) {
 
             case inst_add:
                 of 
                     << p.opcode << ' ' << p.des.i32 << ' '
-                    << p.src1.i32 << ' ' << p.src2.i32 << std::endl;
+                    << p.src1.i32 << ' ' << p.src2.i32 << '\n';
                 break;
             case inst_addi:
                 of
@@ -23,9 +24,25 @@ void ir_generator(AssemblerData* ad, std::string filename, size_t text_start_add
                     << p.src1.i32 << ' ' << p.imm.i32 << '\n';
                 break;
             case inst_addiu:
+                of
+                    << p.opcode << ' ' << p.des.i32 << ' '
+                    << p.src1.i32 << ' ' << p.imm.u32 << '\n';
+                break;
             case inst_addu:
+                of 
+                    << p.opcode << ' ' << p.des.i32 << ' '
+                    << p.src1.i32 << ' ' << p.src2.i32 << '\n';
+                break;
             case inst_and:
+                of 
+                    << p.opcode << ' ' << p.des.i32 << ' '
+                    << p.src1.i32 << ' ' << p.src2.i32 << '\n';
+                break;
             case inst_andi:
+                of
+                    << p.opcode << ' ' << p.des.i32 << ' '
+                    << p.src1.i32 << ' ' << p.imm.i32 << '\n';
+                break;
             case inst_beq:
             case inst_bgez:
             case inst_bgezal:
@@ -45,30 +62,65 @@ void ir_generator(AssemblerData* ad, std::string filename, size_t text_start_add
             case inst_mfhi:
             case inst_mflo:
             case inst_mult:
-            case inst_multu:
+            case inst_multu: break;
             case inst_noop:
+                of << p.opcode << '\n';
+                break;
             case inst_or:
+                of 
+                    << p.opcode << ' ' << p.des.i32 << ' '
+                    << p.src1.i32 << ' ' << p.src2.i32 << '\n';
+                break;
             case inst_ori:
             case inst_sb:
             case inst_sll:
-            case inst_sllv:
+            case inst_sllv: break;
             case inst_slt:
+                of 
+                    << p.opcode << ' ' << p.des.i32 << ' '
+                    << p.src1.i32 << ' ' << p.src2.i32 << '\n';
+                break;
             case inst_slti:
-            case inst_sltiu:
+            case inst_sltiu: break;
             case inst_sltu:
+                of 
+                    << p.opcode << ' ' << p.des.i32 << ' '
+                    << p.src1.i32 << ' ' << p.src2.i32 << '\n';
+                break;
             case inst_sra:
             case inst_srl:
-            case inst_srlv:
+            case inst_srlv: break;
             case inst_sub:
+                of 
+                    << p.opcode << ' ' << p.des.i32 << ' '
+                    << p.src1.i32 << ' ' << p.src2.i32 << '\n';
+                break;
             case inst_subu:
-            case inst_sw:
+                of 
+                    << p.opcode << ' ' << p.des.i32 << ' '
+                    << p.src1.i32 << ' ' << p.src2.i32 << '\n';
+                break;
+            case inst_sw: break;
             case inst_syscall:
+                of << p.opcode << '\n';
+                break;
             case inst_xor:
+                of 
+                    << p.opcode << ' ' << p.des.i32 << ' '
+                    << p.src1.i32 << ' ' << p.src2.i32 << '\n';
+                break;
             case inst_xori:
             default:
                 break;
 
         }
+    }
+
+    of << "DATA " << ad->data_vector.size() << '\n';
+
+    for(char c : ad->data_vector) {
+        auto clut = "0123456789ABCDEF";
+        of << clut[(c >> 4) & 0xF] << clut[c & 0xF] << ' ';
     }
 
 }
